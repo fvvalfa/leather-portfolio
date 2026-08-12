@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --color-leather-50: #faf6f1;
+  --color-leather-100: #f0e6d8;
+  --color-leather-200: #e0cbb3;
+  --color-leather-300: #c9a882;
+  --color-leather-400: #b0895e;
+  --color-leather-500: #966b45;
+  --color-leather-600: #7a5437;
+  --color-leather-700: #63442d;
+  --color-leather-800: #523928;
+  --color-leather-900: #463024;
+  --color-leather-950: #261910;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-leather-50 text-leather-900 antialiased;
+}

@@ -1,17 +1,34 @@
 ---
-
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="Главная — Изделия из кожи">
+  <section class="max-w-6xl mx-auto px-4 py-20 md:py-28">
+    <div class="max-w-2xl">
+      <p class="text-leather-600 text-sm font-medium tracking-wide uppercase mb-4">
+        Ручная работа
+      </p>
+      <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-leather-900 leading-tight mb-6">
+        Изделия из кожи<br />с характером
+      </h1>
+      <p class="text-lg text-leather-700 leading-relaxed mb-10">
+        Кошельки, ремни, сумки и аксессуары. Каждое изделие изготавливается вручную 
+        из качественной кожи с вниманием к деталям и долговечности.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <a
+          href="/works"
+          class="inline-flex items-center px-6 py-3 rounded-lg bg-leather-800 text-white font-medium hover:bg-leather-900 transition"
+        >
+          Смотреть работы
+        </a>
+        <a
+          href="/contacts"
+          class="inline-flex items-center px-6 py-3 rounded-lg border border-leather-300 text-leather-800 font-medium hover:bg-leather-100 transition"
+        >
+          Связаться
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

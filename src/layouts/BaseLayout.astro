@@ -1,0 +1,50 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Изделия из кожи ручной работы',
+  description = 'Портфолио кожевенных изделий ручной работы',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header class="border-b border-leather-200 bg-white/80 backdrop-blur sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+        <a href="/" class="font-semibold text-lg tracking-tight text-leather-800">
+          Кожа · Ручная работа
+        </a>
+        <nav class="flex gap-6 text-sm font-medium text-leather-700">
+          <a href="/" class="hover:text-leather-900 transition">Главная</a>
+          <a href="/works" class="hover:text-leather-900 transition">Работы</a>
+          <a href="/about" class="hover:text-leather-900 transition">О мастере</a>
+          <a href="/contacts" class="hover:text-leather-900 transition">Контакты</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="border-t border-leather-200 mt-16">
+      <div class="max-w-6xl mx-auto px-4 py-10 text-sm text-leather-600 flex flex-col sm:flex-row justify-between gap-4">
+        <p>© {new Date().getFullYear()} Изделия из кожи ручной работы</p>
+        <p>Сделано с вниманием к деталям</p>
+      </div>
+    </footer>
+  </body>
+</html>
