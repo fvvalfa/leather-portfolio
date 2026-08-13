@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCategoryLabel } from '../lib/categories';
+import heroImage from '../assets/hero.jpg';  // отдельное фото для hero
 
 const featuredWorks = (
   await getCollection('works', (entry) => !entry.data.draft && entry.data.featured)
@@ -14,21 +15,17 @@ const heroWork = featuredWorks[0];
 ---
 
 <BaseLayout title="Главная — Изделия из кожи">
-  {/* Полноэкранный hero */}
   <section class="relative min-h-[calc(100svh-4rem)] md:min-h-[calc(100svh-5rem)] flex items-end">
-    {heroWork ? (
-      <div class="absolute inset-0">
-        <Image
-          src={heroWork.data.cover}
-          alt={heroWork.data.title}
-          class="w-full h-full object-cover"
-          loading="eager"
-        />
-        <div class="absolute inset-0 bg-gradient-to-t from-leather-950/80 via-leather-900/40 to-leather-900/20" />
-      </div>
-    ) : (
-      <div class="absolute inset-0 bg-leather-200" />
-    )}
+    <div class="absolute inset-0">
+      <Image
+        src={heroImage}
+        alt="Изделия из кожи ручной работы"
+        class="w-full h-full object-cover"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-leather-950/80 via-leather-900/40 to-leather-900/20" />
+    </div>
 
     <div class="relative z-10 w-full px-5 md:px-10 xl:px-16 pb-16 md:pb-24 pt-10">
       <p class="text-leather-200 text-sm font-medium tracking-[0.2em] uppercase mb-4">
