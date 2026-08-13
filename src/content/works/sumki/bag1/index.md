@@ -4,11 +4,10 @@ description: "Стильная повседневная сумка мягкой 
 date: 2026-03-15
 materials:
   - "Кожа хромового дубления"
-  - "Нить waxed linen"
 category: sumki
 techniques:
-  - "Ручной седельный шов"
-  - "Полировка торцов"
+  - "Машинный шов"
+  - "Выворотная сумка"
 cover: "./bag_1_cover.jpg"
 images:
   - "./bag_1_f2.jpg"
