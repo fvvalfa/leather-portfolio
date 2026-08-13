@@ -10,7 +10,8 @@ techniques:
   - "Ручной седельный шов"
   - "Полировка торцов"
 cover: "./cover.jpg"
-featured: false
+draft: true
+featured: true
 ---
 
 Небольшой классический бумажник.  
