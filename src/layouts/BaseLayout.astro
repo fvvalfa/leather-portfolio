@@ -1,15 +1,24 @@
 ---
 import '../styles/global.css';
+import { categoryList } from '../lib/categories';
 
 interface Props {
   title?: string;
   description?: string;
+  image?: string; // абсолютный или относительный URL картинки для соцсетей
 }
 
 const {
   title = 'Изделия из кожи ручной работы',
   description = 'Портфолио кожевенных изделий ручной работы',
+  image,
 } = Astro.props;
+
+const site = Astro.site ?? new URL('https://leather.f-v-v.ru');
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = image
+  ? new URL(image, site).href
+  : new URL('/og-default.jpg', site).href; // положите позже картинку в public/
 ---
 
 <!doctype html>
@@ -17,21 +26,82 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body class="min-h-screen flex flex-col">
-    <header class="border-b border-leather-200 bg-white/80 backdrop-blur sticky top-0 z-50">
+    <header class="border-b border-leather-200 bg-white/90 backdrop-blur sticky top-0 z-50">
       <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <a href="/" class="font-semibold text-lg tracking-tight text-leather-800">
           Кожа · Ручная работа
         </a>
-        <nav class="flex gap-6 text-sm font-medium text-leather-700">
+
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-leather-700">
           <a href="/" class="hover:text-leather-900 transition">Главная</a>
-          <a href="/works" class="hover:text-leather-900 transition">Работы</a>
+
+          <div class="relative group">
+            <a href="/works" class="hover:text-leather-900 transition inline-flex items-center gap-1">
+              Работы
+              <svg class="w-4 h-4 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </a>
+            <div class="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition absolute top-full left-0 pt-2">
+              <div class="bg-white border border-leather-200 rounded-lg shadow-lg py-2 min-w-[220px]">
+                <a href="/works" class="block px-4 py-2 hover:bg-leather-50 text-leather-800">
+                  Все работы
+                </a>
+                {categoryList.map((cat) => (
+                  <a
+                    href={`/works/${cat.id}`}
+                    class="block px-4 py-2 hover:bg-leather-50 text-leather-800"
+                  >
+                    {cat.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
           <a href="/about" class="hover:text-leather-900 transition">О мастере</a>
           <a href="/contacts" class="hover:text-leather-900 transition">Контакты</a>
+        </nav>
+
+        <button id="menu-btn" class="md:hidden p-2 -mr-2 text-leather-800" aria-label="Меню">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+
+      <div id="mobile-menu" class="hidden md:hidden border-t border-leather-200 bg-white">
+        <nav class="flex flex-col px-4 py-4 text-sm font-medium text-leather-700">
+          <a href="/" class="py-3">Главная</a>
+          <a href="/works" class="py-3">Все работы</a>
+          {categoryList.map((cat) => (
+            <a href={`/works/${cat.id}`} class="py-2 pl-4 text-leather-600">
+              {cat.label}
+            </a>
+          ))}
+          <a href="/about" class="py-3">О мастере</a>
+          <a href="/contacts" class="py-3">Контакты</a>
         </nav>
       </div>
     </header>
@@ -46,5 +116,11 @@ const {
         <p>Сделано с вниманием к деталям</p>
       </div>
     </footer>
+
+    <script>
+      const btn = document.getElementById('menu-btn');
+      const menu = document.getElementById('mobile-menu');
+      btn?.addEventListener('click', () => menu?.classList.toggle('hidden'));
+    </script>
   </body>
 </html>

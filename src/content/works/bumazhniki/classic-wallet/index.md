@@ -5,6 +5,7 @@ date: 2026-03-15
 materials:
   - "Кожа растительного дубления"
   - "Нить waxed linen"
+category: bumazhniki
 techniques:
   - "Ручной седельный шов"
   - "Полировка торцов"
