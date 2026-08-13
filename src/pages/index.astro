@@ -11,10 +11,11 @@ const featuredWorks = (
   )
 )
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
+  .slice(0, 6);
 ---
 
 <BaseLayout title="Главная — Изделия из кожи">
+  <!-- Hero -->
   <section class="max-w-6xl mx-auto px-4 py-20 md:py-28">
     <div class="max-w-2xl">
       <p class="text-leather-600 text-sm font-medium tracking-wide uppercase mb-4">
@@ -44,26 +45,30 @@ const featuredWorks = (
     </div>
   </section>
 
+  <!-- Избранные работы (masonry) -->
   {featuredWorks.length > 0 && (
     <section class="max-w-6xl mx-auto px-4 pb-20">
       <div class="flex items-end justify-between mb-10">
         <h2 class="text-2xl font-semibold text-leather-900">Избранные работы</h2>
-        <a href="/works" class="text-sm font-medium text-leather-600 hover:text-leather-900 transition">
+        <a
+          href="/works"
+          class="text-sm font-medium text-leather-600 hover:text-leather-900 transition"
+        >
           Все работы →
         </a>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="masonry">
         {featuredWorks.map((work) => (
           <a
             href={`/works/${work.data.category}/${work.id}`}
-            class="group block rounded-xl overflow-hidden border border-leather-200 bg-white hover:shadow-lg transition"
+            class="masonry-item group block rounded-xl overflow-hidden border border-leather-200 bg-white hover:shadow-lg transition"
           >
-            <div class="aspect-[4/3] overflow-hidden bg-leather-100">
+            <div class="overflow-hidden bg-leather-100">
               <Image
                 src={work.data.cover}
                 alt={work.data.title}
-                class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                class="w-full h-auto object-cover group-hover:scale-[1.03] transition duration-500"
               />
             </div>
             <div class="p-5">

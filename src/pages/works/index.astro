@@ -36,35 +36,35 @@ const works = (await getCollection('works', (entry) => !entry.data.draft)).sort(
     </div>
 
     {works.length === 0 ? (
-      <p class="text-leather-600">Пока нет опубликованных работ.</p>
-    ) : (
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {works.map((work) => (
-          <a
-            href={`/works/${work.data.category}/${work.id}`}
-            class="group block rounded-xl overflow-hidden border border-leather-200 bg-white hover:shadow-lg transition"
-          >
-            <div class="aspect-[4/3] overflow-hidden bg-leather-100">
-              <Image
-                src={work.data.cover}
-                alt={work.data.title}
-                class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-              />
-            </div>
-            <div class="p-5">
-              <p class="text-xs text-leather-500 mb-1">
-                {getCategoryLabel(work.data.category)}
-              </p>
-              <h2 class="font-semibold text-leather-900 mb-1 group-hover:text-leather-700 transition">
-                {work.data.title}
-              </h2>
-              <p class="text-sm text-leather-600 line-clamp-2">
-                {work.data.description}
-              </p>
-            </div>
-          </a>
-        ))}
-      </div>
-    )}
+  <p class="text-leather-600">Пока нет опубликованных работ.</p>
+) : (
+  <div class="masonry">
+    {works.map((work) => (
+      <a
+        href={`/works/${work.data.category}/${work.id}`}
+        class="masonry-item group block rounded-xl overflow-hidden border border-leather-200 bg-white hover:shadow-lg transition"
+      >
+        <div class="overflow-hidden bg-leather-100">
+          <Image
+            src={work.data.cover}
+            alt={work.data.title}
+            class="w-full h-auto object-cover group-hover:scale-[1.03] transition duration-500"
+          />
+        </div>
+        <div class="p-5">
+          <p class="text-xs text-leather-500 mb-1">
+            {getCategoryLabel(work.data.category)}
+          </p>
+          <h2 class="font-semibold text-leather-900 mb-1 group-hover:text-leather-700 transition">
+            {work.data.title}
+          </h2>
+          <p class="text-sm text-leather-600 line-clamp-2">
+            {work.data.description}
+          </p>
+        </div>
+      </a>
+    ))}
+  </div>
+)}
   </section>
 </BaseLayout>
