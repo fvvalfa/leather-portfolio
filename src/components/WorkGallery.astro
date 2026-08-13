@@ -13,55 +13,37 @@ const { images, title } = Astro.props;
 {
   images.length > 0 && (
     <div class="work-gallery mb-12" data-gallery>
-      {/* Главное фото */}
       <div class="relative rounded-xl overflow-hidden border border-leather-200 bg-leather-100 mb-4">
-        <div class="relative aspect-[4/3] md:aspect-[16/10] bg-leather-100">
-          {images.map((img, index) => (
-            <Image
-              src={img}
-              alt={`${title} — фото ${index + 1}`}
-              class:list={[
-                'gallery-main absolute inset-0 w-full h-full object-cover transition-opacity duration-300',
-                index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0',
-              ]}
-              data-main-index={index}
-            />
-          ))}
-        </div>
+        <Image
+          src={images[0]}
+          alt={`${title} — фото 1`}
+          class="w-full h-auto max-h-[70vh] object-contain mx-auto block"
+          data-main-image
+        />
 
-        {/* Кнопки влево / вправо */}
         {images.length > 1 && (
           <>
             <button
               type="button"
-              class="gallery-prev absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 text-leather-800 shadow hover:bg-white transition flex items-center justify-center"
+              class="gallery-prev absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 text-leather-800 shadow hover:bg-white transition flex items-center justify-center text-lg"
               aria-label="Предыдущее фото"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-              </svg>
+              ←
             </button>
             <button
               type="button"
-              class="gallery-next absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 text-leather-800 shadow hover:bg-white transition flex items-center justify-center"
+              class="gallery-next absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 text-leather-800 shadow hover:bg-white transition flex items-center justify-center text-lg"
               aria-label="Следующее фото"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l-7 7-7-7" />
-              </svg>
+              →
             </button>
+            <div class="absolute bottom-3 right-3 z-20 px-2.5 py-1 rounded-full bg-black/50 text-white text-xs">
+              <span data-counter>1</span> / {images.length}
+            </div>
           </>
-        )}
-
-        {/* Счётчик */}
-        {images.length > 1 && (
-          <div class="absolute bottom-3 right-3 z-20 px-2.5 py-1 rounded-full bg-black/50 text-white text-xs">
-            <span data-counter>1</span> / {images.length}
-          </div>
         )}
       </div>
 
-      {/* Миниатюры */}
       {images.length > 1 && (
         <div class="flex gap-2 overflow-x-auto pb-1">
           {images.map((img, index) => (
@@ -76,44 +58,49 @@ const { images, title } = Astro.props;
               data-thumb-index={index}
               aria-label={`Фото ${index + 1}`}
             >
-              <Image
-                src={img}
-                alt=""
-                class="w-full h-full object-cover"
-              />
+              <Image src={img} alt="" class="w-full h-full object-cover" />
             </button>
           ))}
         </div>
       )}
+
+      <script
+        type="application/json"
+        data-gallery-sources
+        set:html={JSON.stringify(images.map((img) => img.src))}
+      />
     </div>
   )
 }
 
 <script>
   function initGalleries() {
-    document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
-      const mains = gallery.querySelectorAll<HTMLElement>('[data-main-index]');
-      const thumbs = gallery.querySelectorAll<HTMLElement>('[data-thumb-index]');
-      const prevBtn = gallery.querySelector<HTMLButtonElement>('.gallery-prev');
-      const nextBtn = gallery.querySelector<HTMLButtonElement>('.gallery-next');
-      const counter = gallery.querySelector<HTMLElement>('[data-counter]');
-      const total = mains.length;
-      let current = 0;
+    document.querySelectorAll('[data-gallery]').forEach((gallery) => {
+      const root = gallery as HTMLElement;
+      const main = root.querySelector('[data-main-image]') as HTMLImageElement | null;
+      const thumbs = root.querySelectorAll('[data-thumb-index]');
+      const prevBtn = root.querySelector('.gallery-prev');
+      const nextBtn = root.querySelector('.gallery-next');
+      const counter = root.querySelector('[data-counter]');
+      const sourcesEl = root.querySelector('[data-gallery-sources]');
 
+      if (!main || !sourcesEl) return;
+
+      let sources: string[] = [];
+      try {
+        sources = JSON.parse(sourcesEl.textContent || '[]');
+      } catch {
+        return;
+      }
+
+      const total = sources.length;
+      let current = 0;
       if (total === 0) return;
 
       function show(index: number) {
         current = (index + total) % total;
-
-        mains.forEach((el, i) => {
-          if (i === current) {
-            el.classList.add('opacity-100', 'z-10');
-            el.classList.remove('opacity-0', 'z-0');
-          } else {
-            el.classList.add('opacity-0', 'z-0');
-            el.classList.remove('opacity-100', 'z-10');
-          }
-        });
+        main!.src = sources[current];
+        main!.alt = `Фото ${current + 1}`;
 
         thumbs.forEach((el, i) => {
           if (i === current) {
@@ -130,25 +117,11 @@ const { images, title } = Astro.props;
 
       prevBtn?.addEventListener('click', () => show(current - 1));
       nextBtn?.addEventListener('click', () => show(current + 1));
-
       thumbs.forEach((thumb) => {
         thumb.addEventListener('click', () => {
           const i = Number(thumb.getAttribute('data-thumb-index'));
           show(i);
         });
-      });
-
-      // Клавиатура, когда курсор над галереей
-      gallery.tabIndex = 0;
-      gallery.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
-          e.preventDefault();
-          show(current - 1);
-        }
-        if (e.key === 'ArrowRight') {
-          e.preventDefault();
-          show(current + 1);
-        }
       });
     });
   }

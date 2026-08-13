@@ -5,39 +5,48 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCategoryLabel } from '../lib/categories';
 
 const featuredWorks = (
-  await getCollection(
-    'works',
-    (entry) => !entry.data.draft && entry.data.featured
-  )
+  await getCollection('works', (entry) => !entry.data.draft && entry.data.featured)
 )
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 6);
+  .slice(0, 8);
+
+const heroWork = featuredWorks[0];
 ---
 
 <BaseLayout title="Главная — Изделия из кожи">
-  <!-- Hero -->
-  <section class="max-w-6xl mx-auto px-4 py-20 md:py-28">
-    <div class="max-w-2xl">
-      <p class="text-leather-600 text-sm font-medium tracking-wide uppercase mb-4">
+  {/* Полноэкранный hero */}
+  <section class="relative min-h-[calc(100svh-4rem)] md:min-h-[calc(100svh-5rem)] flex items-end">
+    {heroWork ? (
+      <div class="absolute inset-0">
+        <Image
+          src={heroWork.data.cover}
+          alt={heroWork.data.title}
+          class="w-full h-full object-cover"
+          loading="eager"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-leather-950/80 via-leather-900/40 to-leather-900/20" />
+      </div>
+    ) : (
+      <div class="absolute inset-0 bg-leather-200" />
+    )}
+
+    <div class="relative z-10 w-full px-5 md:px-10 xl:px-16 pb-16 md:pb-24 pt-10">
+      <p class="text-leather-200 text-sm font-medium tracking-[0.2em] uppercase mb-4">
         Ручная работа
       </p>
-      <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-leather-900 leading-tight mb-6">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-semibold tracking-tight text-white leading-[1.05] max-w-4xl mb-8">
         Изделия из кожи<br />с характером
       </h1>
-      <p class="text-lg text-leather-700 leading-relaxed mb-10">
-        Кошельки, ремни, сумки и аксессуары. Каждое изделие изготавливается вручную
-        из качественной кожи с вниманием к деталям и долговечности.
-      </p>
       <div class="flex flex-wrap gap-4">
         <a
           href="/works"
-          class="inline-flex items-center px-6 py-3 rounded-lg bg-leather-800 text-white font-medium hover:bg-leather-900 transition"
+          class="inline-flex px-7 py-3.5 rounded-lg bg-leather-50 text-leather-900 font-medium hover:bg-white transition"
         >
           Смотреть работы
         </a>
         <a
           href="/contacts"
-          class="inline-flex items-center px-6 py-3 rounded-lg border border-leather-300 text-leather-800 font-medium hover:bg-leather-100 transition"
+          class="inline-flex px-7 py-3.5 rounded-lg border border-white/50 text-white font-medium hover:bg-white/10 transition"
         >
           Связаться
         </a>
@@ -45,15 +54,12 @@ const featuredWorks = (
     </div>
   </section>
 
-  <!-- Избранные работы (masonry) -->
+  {/* Сетка на всю ширину */}
   {featuredWorks.length > 0 && (
-    <section class="max-w-6xl mx-auto px-4 pb-20">
+    <section class="w-full px-5 md:px-10 xl:px-16 py-16 md:py-24">
       <div class="flex items-end justify-between mb-10">
-        <h2 class="text-2xl font-semibold text-leather-900">Избранные работы</h2>
-        <a
-          href="/works"
-          class="text-sm font-medium text-leather-600 hover:text-leather-900 transition"
-        >
+        <h2 class="text-2xl md:text-3xl font-semibold text-leather-900">Избранные работы</h2>
+        <a href="/works" class="text-sm font-medium text-leather-600 hover:text-leather-900 transition">
           Все работы →
         </a>
       </div>
@@ -62,26 +68,21 @@ const featuredWorks = (
         {featuredWorks.map((work) => (
           <a
             href={`/works/${work.data.category}/${work.id}`}
-            class="masonry-item group block rounded-xl overflow-hidden border border-leather-200 bg-white hover:shadow-lg transition"
+            class="masonry-item group block"
           >
-            <div class="overflow-hidden bg-leather-100">
+            <div class="overflow-hidden bg-leather-100 mb-3">
               <Image
                 src={work.data.cover}
                 alt={work.data.title}
-                class="w-full h-auto object-cover group-hover:scale-[1.03] transition duration-500"
+                class="w-full h-auto object-cover group-hover:scale-[1.02] transition duration-500"
               />
             </div>
-            <div class="p-5">
-              <p class="text-xs text-leather-500 mb-1">
-                {getCategoryLabel(work.data.category)}
-              </p>
-              <h3 class="font-semibold text-leather-900 mb-1 group-hover:text-leather-700 transition">
-                {work.data.title}
-              </h3>
-              <p class="text-sm text-leather-600 line-clamp-2">
-                {work.data.description}
-              </p>
-            </div>
+            <p class="text-xs text-leather-500 mb-0.5">
+              {getCategoryLabel(work.data.category)}
+            </p>
+            <h3 class="font-medium text-leather-900 group-hover:text-leather-700 transition">
+              {work.data.title}
+            </h3>
           </a>
         ))}
       </div>
