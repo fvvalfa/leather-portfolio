@@ -3,6 +3,15 @@ export const categoriesInfo = {
     label: 'Бумажники',
     description: 'Кожаные бумажники ручной работы',
   },
+
+  accessories: {
+    label: 'Аксессуары',
+    description: 'Кожаные аксессуары из натуральной кожи',
+  },
+  cover: {
+    label: 'Чехлы, папки',
+    description: 'Кожаные чехлы и папки из натуральной кожи',
+  },
   sumki: {
     label: 'Сумки женские',
     description: 'Женские сумки из натуральной кожи',
