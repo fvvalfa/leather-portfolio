@@ -17,29 +17,63 @@ const works = (await getCollection('works', (entry) => !entry.data.draft)).sort(
         Изделия, сделанные вручную. Каждое — с вниманием к материалу и деталям.
       </p>
 
-      <div class="flex flex-wrap gap-2">
-        <a href="/works" class="px-4 py-2 rounded-full bg-leather-800 text-white text-sm font-medium">
+      <!-- Фильтры категорий -->
+      <div class="flex flex-wrap gap-2 mb-6" data-filters>
+        <button
+          type="button"
+          data-filter="all"
+          class="filter-btn px-4 py-2 rounded-full bg-leather-800 text-white text-sm font-medium transition"
+        >
           Все
-        </a>
+        </button>
         {categoryList.map((cat) => (
-          <a
-            href={`/works/${cat.id}`}
-            class="px-4 py-2 rounded-full bg-leather-100 text-leather-800 text-sm font-medium hover:bg-leather-200 transition"
+          <button
+            type="button"
+            data-filter={cat.id}
+            class="filter-btn px-4 py-2 rounded-full bg-leather-100 text-leather-800 text-sm font-medium hover:bg-leather-200 transition"
           >
             {cat.label}
-          </a>
+          </button>
         ))}
+      </div>
+
+      <!-- Сортировка + счётчик -->
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-2">
+        <p class="text-sm text-leather-600">
+          <span data-count>{works.length}</span>
+          <span data-count-label>
+            {works.length === 1 ? 'работа' : works.length < 5 ? 'работы' : 'работ'}
+          </span>
+        </p>
+
+        <div class="flex items-center gap-2">
+          <label for="sort" class="text-sm text-leather-600">Сортировка:</label>
+          <select
+            id="sort"
+            data-sort
+            class="text-sm rounded-lg border border-leather-200 bg-white px-3 py-1.5 text-leather-800 focus:outline-none focus:ring-2 focus:ring-leather-400"
+          >
+            <option value="date-desc">Сначала новые</option>
+            <option value="date-asc">Сначала старые</option>
+            <option value="title-asc">По названию А–Я</option>
+            <option value="title-desc">По названию Я–А</option>
+          </select>
+        </div>
       </div>
     </div>
 
     {works.length === 0 ? (
       <p class="text-leather-600">Пока нет опубликованных работ.</p>
     ) : (
-      <div class="masonry">
+      <div class="masonry" data-works-grid>
         {works.map((work) => (
           <a
             href={`/works/${work.data.category}/${work.id}`}
             class="masonry-item group block"
+            data-work-item
+            data-category={work.data.category}
+            data-title={work.data.title}
+            data-date={work.data.date.valueOf()}
           >
             <div class="overflow-hidden bg-leather-100 mb-3">
               <Image
@@ -58,5 +92,96 @@ const works = (await getCollection('works', (entry) => !entry.data.draft)).sort(
         ))}
       </div>
     )}
+
+    <p data-empty class="hidden text-leather-600 mt-8">
+      В этой категории пока нет работ.
+    </p>
   </section>
 </BaseLayout>
+
+<script>
+  function initWorksFilters() {
+    const grid = document.querySelector('[data-works-grid]');
+    const items = Array.from(document.querySelectorAll('[data-work-item]')) as HTMLElement[];
+    const filterBtns = document.querySelectorAll('[data-filter]');
+    const sortSelect = document.querySelector('[data-sort]') as HTMLSelectElement | null;
+    const countEl = document.querySelector('[data-count]');
+    const countLabel = document.querySelector('[data-count-label]');
+    const emptyEl = document.querySelector('[data-empty]');
+
+    if (!grid || items.length === 0) return;
+
+    let activeFilter = 'all';
+
+    function plural(n: number) {
+      const abs = Math.abs(n) % 100;
+      const last = abs % 10;
+      if (abs > 10 && abs < 20) return 'работ';
+      if (last === 1) return 'работа';
+      if (last >= 2 && last <= 4) return 'работы';
+      return 'работ';
+    }
+
+    function apply() {
+      // Фильтр
+      const visible = items.filter((item) => {
+        const cat = item.dataset.category || '';
+        const show = activeFilter === 'all' || cat === activeFilter;
+        item.classList.toggle('hidden', !show);
+        return show;
+      });
+
+      // Сортировка
+      const sort = sortSelect?.value || 'date-desc';
+      visible.sort((a, b) => {
+        const titleA = (a.dataset.title || '').toLowerCase();
+        const titleB = (b.dataset.title || '').toLowerCase();
+        const dateA = Number(a.dataset.date || 0);
+        const dateB = Number(b.dataset.date || 0);
+
+        switch (sort) {
+          case 'date-asc':
+            return dateA - dateB;
+          case 'title-asc':
+            return titleA.localeCompare(titleB, 'ru');
+          case 'title-desc':
+            return titleB.localeCompare(titleA, 'ru');
+          case 'date-desc':
+          default:
+            return dateB - dateA;
+        }
+      });
+
+      // Переставляем в DOM
+      visible.forEach((el) => grid!.appendChild(el));
+
+      // Счётчик
+      if (countEl) countEl.textContent = String(visible.length);
+      if (countLabel) countLabel.textContent = plural(visible.length);
+      emptyEl?.classList.toggle('hidden', visible.length > 0);
+    }
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        activeFilter = btn.getAttribute('data-filter') || 'all';
+
+        filterBtns.forEach((b) => {
+          const isActive = b.getAttribute('data-filter') === activeFilter;
+          b.classList.toggle('bg-leather-800', isActive);
+          b.classList.toggle('text-white', isActive);
+          b.classList.toggle('bg-leather-100', !isActive);
+          b.classList.toggle('text-leather-800', !isActive);
+        });
+
+        apply();
+      });
+    });
+
+    sortSelect?.addEventListener('change', apply);
+
+    apply();
+  }
+
+  initWorksFilters();
+  document.addEventListener('astro:page-load', initWorksFilters);
+</script>

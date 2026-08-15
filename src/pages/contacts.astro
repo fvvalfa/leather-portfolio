@@ -12,8 +12,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         Контакты
       </h1>
       <p class="text-leather-700 max-w-xl mx-auto">
-        Если вам понравилось какое-то изделие или вы хотите обсудить индивидуальный заказ —
-        напишите мне любым удобным способом.
+        Если вам понравилось какое-то изделие или вы хотите обсудить индивидуальную работу —
+        напишите удобным способом.
       </p>
     </div>
 
@@ -21,27 +21,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <!-- Контактная информация -->
       <div class="bg-white p-6 rounded-xl border border-leather-100">
         <h2 class="text-xl font-semibold text-leather-900 mb-6">
-          Как со мной связаться
+          Как связаться
         </h2>
 
         <div class="space-y-5">
-          <!-- Телефон 
-          <div class="flex items-start gap-4">
-            <div class="w-10 h-10 rounded-lg bg-leather-100 flex items-center justify-center flex-shrink-0">
-              <svg class="w-5 h-5 text-leather-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-              </svg>
-
-            </div>
-            <div>
-              <p class="text-sm font-medium text-leather-900">Телефон</p>
-              <a href="tel:+70000000000" class="text-leather-700 hover:text-leather-900 transition">
-                +7 (000) 000-00-00
-              </a>
-              <p class="text-xs text-leather-500 mt-1">Звонки и сообщения в мессенджеры</p>
-            </div>
-          </div>
--->
           <!-- Email -->
           <div class="flex items-start gap-4">
             <div class="w-10 h-10 rounded-lg bg-leather-100 flex items-center justify-center flex-shrink-0">
@@ -51,10 +34,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </div>
             <div>
               <p class="text-sm font-medium text-leather-900">Email</p>
-              <a href="mailto:your@email.com" class="text-leather-700 hover:text-leather-900 transition">
+              <a
+                href="mailto:fvv.alfa@yandex.ru"
+                class="text-leather-700 hover:text-leather-900 transition"
+              >
                 fvv.alfa@yandex.ru
               </a>
-              <p class="text-xs text-leather-500 mt-1">Отвечаю в течение 1-2 дней</p>
+              <p class="text-xs text-leather-500 mt-1">Обычно отвечаю в течение 1–2 дней</p>
             </div>
           </div>
 
@@ -67,32 +53,30 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </div>
             <div>
               <p class="text-sm font-medium text-leather-900">Мессенджеры</p>
-              <div class="flex gap-3 mt-2">
-                <a href="https://t.me/glukland" class="text-sm text-leather-700 hover:text-leather-900 transition">Telegram</a>
-                <a href="https://max.ru/u/f9LHodD0cOJf2ravGVa1zfqQsi0FNHo9GxEsHzbRt_i1FZ1mBC3YSDlXCdI" class="text-sm text-leather-700 hover:text-leather-900 transition">MAX</a>
+              <div class="flex flex-wrap gap-3 mt-2">
+                <a
+                  href="https://t.me/glukland"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-sm text-leather-700 hover:text-leather-900 transition"
+                >
+                  Telegram
+                </a>
+                <a
+                  href="https://max.ru/u/f9LHodD0cOJf2ravGVa1zfqQsi0FNHo9GxEsHzbRt_i1FZ1mBC3YSDlXCdI"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-sm text-leather-700 hover:text-leather-900 transition"
+                >
+                  MAX
+                </a>
               </div>
             </div>
           </div>
-
-          <!-- Соцсети 
-          <div class="flex items-start gap-4">
-            <div class="w-10 h-10 rounded-lg bg-leather-100 flex items-center justify-center flex-shrink-0">
-              <svg class="w-5 h-5 text-leather-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
-              </svg>
-            </div>
-            <div>
-              <p class="text-sm font-medium text-leather-900">Социальные сети</p>
-              <div class="flex gap-3 mt-2">
-                
-                <a href="#" class="text-sm text-leather-700 hover:text-leather-900 transition">VK</a>
-              </div>
-            </div>
-          </div>
-          -->
         </div>
       </div>
-      <!-- Форма обратной связи -->
+
+      <!-- Форма -->
       <div class="bg-white p-6 rounded-xl border border-leather-100">
         <h2 class="text-xl font-semibold text-leather-900 mb-6">
           Написать сообщение
@@ -153,14 +137,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </button>
         </form>
       </div>
-    </div>
-
-    <!-- Примечание -->
-    <div class="mt-12 p-6 bg-leather-100 rounded-lg text-center">
-      <p class="text-leather-700">
-        📝 <strong>Примечание:</strong> Замените контактные данные на свои.
-        Для работы формы настройте отправку через сервис вроде Formspree или EmailJS.
-      </p>
     </div>
   </section>
 </BaseLayout>

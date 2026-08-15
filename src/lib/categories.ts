@@ -13,8 +13,8 @@ export const categoriesInfo = {
     description: 'Кожаные чехлы и папки из натуральной кожи',
   },
   sumki: {
-    label: 'Сумки женские',
-    description: 'Женские сумки из натуральной кожи',
+    label: 'Сумки',
+    description: 'Cумки из натуральной кожи',
   },
   ryukzaki: {
     label: 'Рюкзаки',

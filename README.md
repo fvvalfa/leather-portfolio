@@ -1,43 +1,110 @@
-# Astro Starter Kit: Minimal
+# Leather Portfolio
 
-```sh
-npm create astro@latest -- --template minimal
+Портфолио изделий из кожи ручной работы.
+
+Сайт: [leather.f-v-v.ru](https://leather.f-v-v.ru)
+
+## Стек
+
+- [Astro](https://astro.build) 7
+- [Tailwind CSS](https://tailwindcss.com) 4
+- Content Collections (Markdown)
+
+## Структура проекта
+
 ```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
 /
-├── public/
+├── public/                 # Статика (favicon, robots.txt, изображения)
 ├── src/
-│   └── pages/
-│       └── index.astro
+│   ├── assets/             # Изображения, импортируемые в код
+│   ├── components/         # Компоненты (галерея и др.)
+│   ├── content/works/      # Работы (Markdown + изображения)
+│   ├── layouts/            # Базовый layout
+│   ├── lib/                # Категории и вспомогательные функции
+│   ├── pages/              # Страницы и маршруты
+│   └── styles/             # Глобальные стили
+├── astro.config.mjs
 └── package.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Команды
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+| Команда           | Действие                                      |
+|-------------------|-----------------------------------------------|
+| `npm install`     | Установка зависимостей                        |
+| `npm run dev`     | Локальный сервер разработки (`localhost:4321`) |
+| `npm run build`   | Сборка в `./dist/`                            |
+| `npm run preview` | Просмотр production-сборки                    |
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Как добавить работу
 
-## 🧞 Commands
+1. Создайте папку в нужной категории:
 
-All commands are run from the root of the project, from a terminal:
+```
+src/content/works/<категория>/<slug>/
+```
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+2. Положите туда `index.md` и изображения (`cover.jpg` и др.).
 
-## 👀 Want to learn more?
+3. Пример frontmatter:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+```md
+---
+title: Классический бумажник
+description: Кожаный бумажник ручной работы
+date: 2025-06-12
+category: bumazhniki
+materials:
+  - Натуральная кожа
+  - Фурнитура латунь
+techniques:
+  - Ручная строчка
+cover: ./cover.jpg
+images:
+  - ./photo-2.jpg
+featured: true
+draft: false
+---
+
+Текст описания изделия.
+```
+
+### Категории
+
+| ID           | Название        |
+|--------------|-----------------|
+| `bumazhniki` | Бумажники       |
+| `accessories`| Аксессуары      |
+| `cover`      | Чехлы, папки    |
+| `sumki`      | Сумки женские   |
+| `ryukzaki`   | Рюкзаки         |
+
+Категории задаются в `src/lib/categories.ts`.
+
+## Основные страницы
+
+- `/` — главная (hero, категории, избранные работы)
+- `/works` — все работы с фильтрами и сортировкой
+- `/works/<category>` — работы категории
+- `/works/<category>/<slug>` — страница изделия (галерея, материалы, похожие)
+- `/about` — о мастере
+- `/contacts` — контакты и форма обратной связи
+
+## Особенности
+
+- Lightbox-просмотр фото на страницах работ
+- Фильтрация по категориям и сортировка на `/works`
+- Адаптивная вёрстка, активный пункт меню, кнопка «Наверх»
+- Форма на Formspree (`/contacts`)
+
+## Деплой
+
+Сайт собирается в статику (`npm run build`).  
+Готовый результат — папка `dist/`.
+
+Для GitHub Pages уже есть workflow в `.github/workflows/`.  
+Домен задаётся в `astro.config.mjs` через `site`.
+
+## Лицензия
+
+Личный проект. Код и контент принадлежат автору.

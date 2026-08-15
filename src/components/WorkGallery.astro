@@ -13,13 +13,21 @@ const { images, title } = Astro.props;
 {
   images.length > 0 && (
     <div class="work-gallery mb-12" data-gallery>
+      <!-- Основное фото -->
       <div class="relative rounded-xl overflow-hidden border border-leather-200 bg-leather-100 mb-4">
-        <Image
-          src={images[0]}
-          alt={`${title} — фото 1`}
-          class="w-full h-auto max-h-[70vh] object-contain mx-auto block"
-          data-main-image
-        />
+        <button
+          type="button"
+          class="block w-full cursor-zoom-in"
+          data-open-lightbox
+          aria-label="Открыть фото в полном размере"
+        >
+          <Image
+            src={images[0]}
+            alt={`${title} — фото 1`}
+            class="w-full h-auto max-h-[70vh] object-contain mx-auto block"
+            data-main-image
+          />
+        </button>
 
         {images.length > 1 && (
           <>
@@ -44,6 +52,7 @@ const { images, title } = Astro.props;
         )}
       </div>
 
+      <!-- Превью -->
       {images.length > 1 && (
         <div class="flex gap-2 overflow-x-auto pb-1">
           {images.map((img, index) => (
@@ -73,6 +82,53 @@ const { images, title } = Astro.props;
   )
 }
 
+<!-- Lightbox overlay -->
+<div
+  id="lightbox"
+  class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Просмотр фото"
+>
+  <button
+    type="button"
+    class="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-white/10 text-white hover:bg-white/20 transition flex items-center justify-center text-2xl"
+    data-lightbox-close
+    aria-label="Закрыть"
+  >
+    ×
+  </button>
+
+  <button
+    type="button"
+    class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 text-white hover:bg-white/20 transition flex items-center justify-center text-xl"
+    data-lightbox-prev
+    aria-label="Предыдущее"
+  >
+    ←
+  </button>
+
+  <button
+    type="button"
+    class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 text-white hover:bg-white/20 transition flex items-center justify-center text-xl"
+    data-lightbox-next
+    aria-label="Следующее"
+  >
+    →
+  </button>
+
+  <img
+    data-lightbox-image
+    src=""
+    alt=""
+    class="max-h-[90vh] max-w-[92vw] object-contain select-none"
+  />
+
+  <div class="absolute bottom-5 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full bg-black/60 text-white text-sm">
+    <span data-lightbox-counter>1</span>
+  </div>
+</div>
+
 <script>
   function initGalleries() {
     document.querySelectorAll('[data-gallery]').forEach((gallery) => {
@@ -83,6 +139,7 @@ const { images, title } = Astro.props;
       const nextBtn = root.querySelector('.gallery-next');
       const counter = root.querySelector('[data-counter]');
       const sourcesEl = root.querySelector('[data-gallery-sources]');
+      const openBtn = root.querySelector('[data-open-lightbox]');
 
       if (!main || !sourcesEl) return;
 
@@ -115,13 +172,72 @@ const { images, title } = Astro.props;
         if (counter) counter.textContent = String(current + 1);
       }
 
-      prevBtn?.addEventListener('click', () => show(current - 1));
-      nextBtn?.addEventListener('click', () => show(current + 1));
+      prevBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        show(current - 1);
+      });
+      nextBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        show(current + 1);
+      });
       thumbs.forEach((thumb) => {
         thumb.addEventListener('click', () => {
           const i = Number(thumb.getAttribute('data-thumb-index'));
           show(i);
         });
+      });
+
+      // Lightbox
+      const lightbox = document.getElementById('lightbox');
+      const lbImage = lightbox?.querySelector('[data-lightbox-image]') as HTMLImageElement | null;
+      const lbCounter = lightbox?.querySelector('[data-lightbox-counter]');
+      const lbClose = lightbox?.querySelector('[data-lightbox-close]');
+      const lbPrev = lightbox?.querySelector('[data-lightbox-prev]');
+      const lbNext = lightbox?.querySelector('[data-lightbox-next]');
+
+      function openLightbox(index: number) {
+        if (!lightbox || !lbImage) return;
+        current = index;
+        lbImage.src = sources[current];
+        lbImage.alt = `Фото ${current + 1}`;
+        if (lbCounter) lbCounter.textContent = `${current + 1} / ${total}`;
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        if (!lightbox) return;
+        lightbox.classList.add('hidden');
+        lightbox.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+
+      function lbShow(index: number) {
+        current = (index + total) % total;
+        if (lbImage) {
+          lbImage.src = sources[current];
+          lbImage.alt = `Фото ${current + 1}`;
+        }
+        if (lbCounter) lbCounter.textContent = `${current + 1} / ${total}`;
+        // Синхронизируем и основную галерею
+        show(current);
+      }
+
+      openBtn?.addEventListener('click', () => openLightbox(current));
+      lbClose?.addEventListener('click', closeLightbox);
+      lbPrev?.addEventListener('click', () => lbShow(current - 1));
+      lbNext?.addEventListener('click', () => lbShow(current + 1));
+
+      lightbox?.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (lightbox?.classList.contains('hidden')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') lbShow(current - 1);
+        if (e.key === 'ArrowRight') lbShow(current + 1);
       });
     });
   }

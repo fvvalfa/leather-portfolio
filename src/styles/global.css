@@ -41,3 +41,23 @@ body {
   break-inside: avoid;
   margin-bottom: 1.25rem;
 }
+.prose {
+  @apply text-leather-800;
+}
+
+.prose p {
+  @apply mb-4 leading-relaxed;
+}
+
+.prose h2,
+.prose h3 {
+  @apply text-leather-900 font-semibold mt-8 mb-3;
+}
+
+.prose ul {
+  @apply list-disc pl-5 mb-4 space-y-1;
+}
+
+.prose a {
+  @apply text-leather-700 underline underline-offset-2 hover:text-leather-900;
+}

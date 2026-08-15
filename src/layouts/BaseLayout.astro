@@ -17,6 +17,8 @@ const {
 const site = Astro.site ?? new URL('https://leather.f-v-v.ru');
 const canonical = new URL(Astro.url.pathname, site).href;
 const ogImage = image ? new URL(image, site).href : undefined;
+
+const path = Astro.url.pathname;
 ---
 
 <!doctype html>
@@ -31,9 +33,13 @@ const ogImage = image ? new URL(image, site).href : undefined;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:site_name" content="Изделия из кожи ручной работы" />
     {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
+
   <body class="min-h-screen flex flex-col bg-leather-50 text-leather-900">
     <header class="fixed top-0 inset-x-0 z-50 bg-leather-50/80 backdrop-blur-md border-b border-leather-200/60">
       <div class="w-full px-5 md:px-10 xl:px-16 h-16 md:h-20 flex items-center justify-between">
@@ -42,9 +48,24 @@ const ogImage = image ? new URL(image, site).href : undefined;
         </a>
 
         <nav class="hidden md:flex items-center gap-8 lg:gap-10 text-sm font-medium text-leather-700">
-          <a href="/" class="hover:text-leather-900 transition">Главная</a>
+          <a
+            href="/"
+            class:list={[
+              'hover:text-leather-900 transition',
+              path === '/' && 'text-leather-900 font-semibold',
+            ]}
+          >
+            Главная
+          </a>
+
           <div class="relative group">
-            <a href="/works" class="hover:text-leather-900 transition inline-flex items-center gap-1">
+            <a
+              href="/works"
+              class:list={[
+                'hover:text-leather-900 transition inline-flex items-center gap-1',
+                path.startsWith('/works') && 'text-leather-900 font-semibold',
+              ]}
+            >
               Работы
               <svg class="w-4 h-4 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -61,11 +82,29 @@ const ogImage = image ? new URL(image, site).href : undefined;
               </div>
             </div>
           </div>
-          <a href="/about" class="hover:text-leather-900 transition">О мастере</a>
-          <a href="/contacts" class="hover:text-leather-900 transition">Контакты</a>
+
+          <a
+            href="/about"
+            class:list={[
+              'hover:text-leather-900 transition',
+              path === '/about' && 'text-leather-900 font-semibold',
+            ]}
+          >
+            О мастере
+          </a>
+
+          <a
+            href="/contacts"
+            class:list={[
+              'hover:text-leather-900 transition',
+              path === '/contacts' && 'text-leather-900 font-semibold',
+            ]}
+          >
+            Контакты
+          </a>
         </nav>
 
-        <button id="menu-btn" class="md:hidden p-2 text-leather-800" aria-label="Меню">
+        <button id="menu-btn" class="md:hidden p-2 text-leather-800" aria-label="Меню" aria-expanded="false">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
@@ -74,13 +113,41 @@ const ogImage = image ? new URL(image, site).href : undefined;
 
       <div id="mobile-menu" class="hidden md:hidden border-t border-leather-200 bg-leather-50">
         <nav class="flex flex-col px-5 py-4 text-sm font-medium text-leather-700">
-          <a href="/" class="py-3">Главная</a>
-          <a href="/works" class="py-3">Все работы</a>
+          <a
+            href="/"
+            class:list={['py-3', path === '/' && 'text-leather-900 font-semibold']}
+          >
+            Главная
+          </a>
+          <a
+            href="/works"
+            class:list={['py-3', path.startsWith('/works') && 'text-leather-900 font-semibold']}
+          >
+            Все работы
+          </a>
           {categoryList.map((cat) => (
-            <a href={`/works/${cat.id}`} class="py-2 pl-4 text-leather-600">{cat.label}</a>
+            <a
+              href={`/works/${cat.id}`}
+              class:list={[
+                'py-2 pl-4 text-leather-600',
+                path === `/works/${cat.id}` && 'text-leather-900 font-semibold',
+              ]}
+            >
+              {cat.label}
+            </a>
           ))}
-          <a href="/about" class="py-3">О мастере</a>
-          <a href="/contacts" class="py-3">Контакты</a>
+          <a
+            href="/about"
+            class:list={['py-3', path === '/about' && 'text-leather-900 font-semibold']}
+          >
+            О мастере
+          </a>
+          <a
+            href="/contacts"
+            class:list={['py-3', path === '/contacts' && 'text-leather-900 font-semibold']}
+          >
+            Контакты
+          </a>
         </nav>
       </div>
     </header>
@@ -96,10 +163,54 @@ const ogImage = image ? new URL(image, site).href : undefined;
       </div>
     </footer>
 
+    <!-- Кнопка наверх -->
+    <button
+      id="back-to-top"
+      type="button"
+      class="fixed bottom-6 right-6 z-40 w-11 h-11 rounded-full bg-leather-800 text-white shadow-lg opacity-0 pointer-events-none translate-y-2 transition-all duration-300 hover:bg-leather-900 flex items-center justify-center"
+      aria-label="Наверх"
+    >
+      ↑
+    </button>
+
     <script>
       const btn = document.getElementById('menu-btn');
       const menu = document.getElementById('mobile-menu');
-      btn?.addEventListener('click', () => menu?.classList.toggle('hidden'));
+
+      function closeMenu() {
+        menu?.classList.add('hidden');
+        btn?.setAttribute('aria-expanded', 'false');
+      }
+
+      function toggleMenu() {
+        const isHidden = menu?.classList.toggle('hidden');
+        btn?.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+      }
+
+      btn?.addEventListener('click', toggleMenu);
+
+      menu?.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMenu();
+      });
+
+      // Кнопка «Наверх»
+      const backToTop = document.getElementById('back-to-top');
+
+      window.addEventListener('scroll', () => {
+        if (!backToTop) return;
+        const show = window.scrollY > 400;
+        backToTop.classList.toggle('opacity-0', !show);
+        backToTop.classList.toggle('pointer-events-none', !show);
+        backToTop.classList.toggle('translate-y-2', !show);
+      });
+
+      backToTop?.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     </script>
   </body>
 </html>
